@@ -9,6 +9,8 @@ Play here - https://connect-four-game-gamma.vercel.app/
 - Play a game of Connect Four against another human player (alternating turns on the same computer)
 - View the optimal layout for the interface depending on their device's screen size
 - See hover and focus states for all interactive elements on the page
+- Includes audio for better User Experience
+- Has timer functionality
 
 ## Currently working on:
 - Play against the computer
@@ -18,6 +20,10 @@ Play here - https://connect-four-game-gamma.vercel.app/
 - npm install
 - npm run build
 - open the index.html file inside ./build folder
+
+## Screenshot
+<img width="1440" alt="image" src="https://github.com/rashmibhaskar/connect-four-game/assets/50526525/0eb1d06d-f6a3-4a25-92fc-3cc90c8c9b46">
+
 
 ## Enjoy your game!! 🤩 
 
