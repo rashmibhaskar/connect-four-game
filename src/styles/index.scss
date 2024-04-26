@@ -1,0 +1,837 @@
+@use "sass:color";
+@use "sass:math";
+
+// Screen sizes
+$desktopSize: 1360px;
+$tabletSize: 450px;
+
+// Board
+$boardColumns: 7;
+$boardRows: 6;
+$boardPadding: 10px;
+$boardBorderWidth: 1vw;
+
+// Discs
+$discSize: 50px;
+$discSizeDesktop: 70px;
+$discMargin: 10px;
+$discBorderWidth: 4px;
+
+// Arrow
+$arrowSize: 50px;
+$arrowSizeDesktop: 70px;
+
+// Players
+$playerSize: 50px;
+
+// Modal
+$modalPopupAnimationTime: 0.5s;
+$modalHideAnimationTime: 0.35s;
+$modalCloseSize: 70px;
+
+// Text
+$ff: "Anybody", sans-serif;
+$fwMedium: 600;
+
+/* ---------- Purple colors ---------- */
+$purple: #7945ff;
+$purpleDark: #5b2cd5;
+$purpleVeryDark: #3f1e97;
+@debug purpleVeryDark color.adjust($purpleDark, $lightness: -15%);
+
+/* ---------- Red colors ---------- */
+$red: #fd6486;
+$redDark: #7e3243;
+
+/* ---------- Yellow colors ---------- */
+$yellow: #ffce67;
+$yellowDark: #7f6633;
+
+/* ---------- Primary colors ---------- */
+$primaryBg: #fff;
+$primaryText: #000;
+$primaryTextSoft: #7b7b7b;
+
+/* ---------- Secondary colors ---------- */
+$secondaryBg: #000;
+$secondaryText: #fff;
+$secondaryBgSoft: #4d4d4d;
+@debug secondaryBg soft color.adjust($secondaryBg, $lightness: 30%);
+
+/* ---------- Tertiary colors ---------- */
+$tertiaryText: $purple;
+
+/* ---------- Body colors ---------- */
+$bgClr: $purple;
+
+/* ---------- Game button colors ---------- */
+$buttonBg: $purpleDark;
+$buttonBgHover: $purpleVeryDark;
+$buttonClr: $secondaryText;
+
+/* ---------- Player colors ---------- */
+$playerOneClr: $red;
+$playerTwoClr: $yellow;
+
+/* ---------- Board colors ---------- */
+$boardBg: $primaryBg;
+
+/* ---------- Disc colors ---------- */
+$discBg: #7945ff;
+$discSelectedBgPlayerOne: $red;
+$discSelectedShadowClrPlayerOne: $redDark;
+$discSelectedBgPlayerTwo: $yellow;
+$discSelectedShadowClrPlayerTwo: $yellowDark;
+
+/* ---------- Modal animation keyframes ---------- */
+@keyframes popupModal {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes hideModal {
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  to {
+    transform: translate(-50%, -50%) scale(0);
+  }
+}
+
+/* ---------- Scrollbar ---------- */
+/* width */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  background-color: $primaryBg;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: $secondaryBg;
+  border: 2px solid $primaryBg;
+  border-radius: 50px;
+  background-clip: content-box;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: $secondaryBgSoft;
+}
+
+/* ---------- Reset styles ---------- */
+* {
+  margin: 0;
+  padding: 0;
+
+  &,
+  &::before,
+  &::after {
+    box-sizing: border-box;
+  }
+}
+
+html {
+  line-height: 1.15;
+}
+
+body {
+  background-color: $bgClr;
+  font-family: $ff;
+}
+
+img {
+  display: block;
+}
+
+button {
+  font: inherit;
+}
+
+/* ---------- Application container ---------- */
+#root {
+  max-width: 700px;
+  margin: 2rem auto;
+  display: grid;
+  place-content: center;
+}
+
+/* ---------- Buttons ---------- */
+.button,
+.menu-button {
+  cursor: pointer;
+  outline: none;
+  border: none;
+  text-transform: uppercase;
+  font-weight: $fwMedium;
+}
+
+.button {
+  display: inline-block;
+  font-size: 0.9rem;
+  padding: 0.5rem 1.5rem;
+  background-color: $buttonBg;
+  color: $buttonClr;
+  border-radius: 50px;
+
+  &[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &:hover {
+    background-color: $buttonBgHover;
+  }
+}
+
+.menu-button {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  background-color: $primaryBg;
+  text-align: left;
+  font-size: 1.5rem;
+  color: $primaryText;
+  border-radius: 15px;
+  border: 4px solid $secondaryBg;
+  box-shadow: 0 10px 0 0 $secondaryBg;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20%;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+
+    &::before {
+      bottom: -12px;
+    }
+  }
+
+  &.primary {
+    background-color: $playerOneClr;
+    color: $secondaryText;
+  }
+
+  &.secondary {
+    background-color: $playerTwoClr;
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &.has-icon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+  }
+
+  &-icon {
+    height: 50px;
+    margin-left: 1rem;
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+/* ---------- Main Menu ---------- */
+.menu {
+  padding: 2rem 0;
+
+  &-buttons {
+    margin-top: 2rem;
+  }
+}
+
+/* ---------- Game Header ---------- */
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.game-icon {
+  max-width: 42px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+
+  .circle {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    border-radius: 50px;
+    background-color: $discSelectedBgPlayerOne;
+    border: 2px solid $secondaryBg;
+    box-shadow: 0 2.5px 0 0 $secondaryBg;
+    margin: 2px 2px 0 0;
+
+    &:nth-of-type(2n) {
+      margin-right: 0;
+    }
+
+    &:nth-of-type(2),
+    &:nth-of-type(3) {
+      background-color: $discSelectedBgPlayerTwo;
+    }
+  }
+}
+
+/* ---------- Players and Board wrapper ---------- */
+.players-and-board-wrapper {
+  @media screen and (min-width: $desktopSize) {
+    display: flex;
+    align-items: center;
+
+    // for specificity
+    .players-wrapper {
+      .player {
+        .player-avatar {
+          top: -(math.div($playerSize, 2));
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .player-name {
+          margin: 0;
+          margin-top: math.div($playerSize, 2);
+          width: max-content;
+        }
+      }
+    }
+
+    .player-1 {
+      order: 0;
+    }
+
+    .board {
+      order: 1;
+      margin-left: 4rem;
+      margin-right: 4rem;
+    }
+
+    .player-2 {
+      order: 2;
+    }
+  }
+}
+
+/* ---------- Players ---------- */
+.players-wrapper {
+  @media screen and (min-width: $tabletSize) {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  @media screen and (min-width: $desktopSize) {
+    display: contents;
+  }
+
+  .player {
+    padding: 1.5rem;
+    margin: 0 auto;
+    margin-top: 2.5rem;
+    border-radius: 15px;
+    display: block;
+    max-width: max-content;
+    background-color: $primaryBg;
+    border: 4px solid $secondaryBg;
+    box-shadow: 0 10px 0 0 $secondaryBg;
+    position: relative;
+
+    &-avatar {
+      width: $playerSize;
+      height: $playerSize;
+      position: absolute;
+      top: -(math.div($playerSize, 2));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+
+      &,
+      &::before {
+        border-radius: 50%;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        z-index: 1;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 100%;
+        background-color: $secondaryBg;
+      }
+
+      &-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        position: relative;
+        z-index: 5;
+      }
+
+      @media screen and (min-width: $tabletSize) {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+
+    &-name {
+      display: inline-block;
+      text-transform: uppercase;
+      text-align: center;
+      font-weight: $fwMedium;
+      font-size: 1.25rem;
+      margin-top: math.div($playerSize, 2.5);
+
+      @media screen and (min-width: $tabletSize) {
+        margin-top: 0;
+      }
+    }
+
+    @media screen and (min-width: $tabletSize) {
+      margin: 0;
+      max-width: initial;
+
+      &-1 {
+        .player-avatar {
+          right: auto;
+          left: -(math.div($playerSize, 2));
+        }
+      }
+
+      &-2 {
+        .player-avatar {
+          left: auto;
+          right: -(math.div($playerSize, 2));
+        }
+      }
+
+      &-name {
+        &:first-of-type {
+          margin-left: math.div($playerSize, 2);
+        }
+
+        &:last-of-type {
+          margin-right: math.div($playerSize, 2);
+        }
+      }
+    }
+  }
+}
+
+/* ---------- Board ---------- */
+.board {
+  width: ($discSize * $boardColumns) + ($discMargin * ($boardColumns - 1)) +
+    ($discBorderWidth * $boardColumns);
+  max-width: 95vw;
+  height: auto;
+  margin: 2rem auto 0 auto;
+  border-width: 2vw;
+  padding: 1vw;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 15px;
+  background-color: $boardBg;
+  border: 4px solid $secondaryBg;
+  box-shadow: 0 10px 0 0 $secondaryBg;
+
+  @media screen and (min-width: $tabletSize) {
+    max-width: initial;
+    height: ($discSize * $boardRows) + ($discMargin * ($boardRows)) +
+      ($discBorderWidth * $boardRows);
+    padding: $boardPadding;
+  }
+
+  @media screen and (min-width: $desktopSize) {
+    width: ($discSizeDesktop * $boardColumns) +
+      ($discMargin * ($boardColumns - 1)) + ($discBorderWidth * $boardColumns);
+    height: ($discSizeDesktop * $boardRows) + ($discMargin * ($boardRows)) +
+      ($discBorderWidth * $boardRows);
+  }
+}
+
+.arrow {
+  width: 13.57vw - $boardBorderWidth;
+  height: auto;
+  position: absolute;
+
+  &.hidden {
+    visibility: hidden;
+  }
+
+  &.player-1 {
+    path {
+      fill: $playerOneClr;
+    }
+  }
+
+  &.player-2 {
+    path {
+      fill: $playerTwoClr;
+    }
+  }
+
+  @media screen and (min-width: $tabletSize) {
+    width: $arrowSize;
+  }
+
+  @media screen and (min-width: $desktopSize) {
+    width: $arrowSizeDesktop;
+  }
+}
+
+/* ---------- Discs ---------- */
+.disc {
+  width: 13.57vw - $boardBorderWidth;
+  height: 13.57vw - $boardBorderWidth;
+  max-width: initial;
+  max-height: initial;
+  margin: auto;
+  margin-bottom: $boardBorderWidth;
+  background-color: $secondaryBg;
+  border: $discBorderWidth solid $secondaryBg;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &:nth-of-type(#{$boardColumns}n) {
+    margin-right: 0;
+  }
+
+  &,
+  &::before {
+    border-radius: 50px;
+  }
+
+  &::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: $discBg;
+  }
+
+  &.filled {
+    &::before {
+      top: 10%;
+    }
+
+    &-1 {
+      background-color: $discSelectedShadowClrPlayerOne;
+
+      &::before {
+        background-color: $discSelectedBgPlayerOne;
+      }
+    }
+
+    &-2 {
+      background-color: $discSelectedShadowClrPlayerTwo;
+
+      &::before {
+        background-color: $discSelectedBgPlayerTwo;
+      }
+    }
+  }
+
+  &.four-in-row {
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 5;
+      transform: translate(-50%, -50%);
+
+      width: 60%;
+      height: 60%;
+      border: 8px solid $primaryBg;
+      border-radius: 50%;
+    }
+  }
+
+  @media screen and (min-width: $tabletSize) {
+    width: 14.8%;
+    max-width: $discSize;
+    height: 16.6%;
+    max-height: $discSize;
+    margin: 0 $discMargin $discMargin 0;
+  }
+
+  @media screen and (min-width: $desktopSize) {
+    max-width: $discSizeDesktop;
+    max-height: $discSizeDesktop;
+  }
+}
+
+/* ---------- Game Box ---------- */
+.game-box {
+  padding: 1rem 2rem;
+  max-width: max-content;
+  margin: 0 auto;
+  margin-top: -1rem;
+  background-color: $primaryBg;
+  color: $secondaryText;
+  text-align: center;
+  border-radius: 15px;
+  border: 4px solid $secondaryBg;
+  box-shadow: 0 10px 0 0 $secondaryBg;
+  position: relative;
+  z-index: 5;
+
+  &-player,
+  &-state {
+    word-break: break-all;
+    font-weight: $fwMedium;
+    color: $primaryText;
+    text-transform: uppercase;
+  }
+
+  &-player {
+    font-size: 1.25rem;
+  }
+
+  &-state {
+    font-size: 4rem;
+
+    &.small {
+      font-size: 3rem;
+    }
+  }
+
+  &.time-over-box {
+    background-color: $primaryBg;
+
+    .game-box-player,
+    .game-box-state {
+      color: $primaryText;
+    }
+
+    .game-box-player {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &.turn-box {
+    background-color: $red;
+
+    &.player-1 {
+      background-color: $red;
+    }
+
+    &.player-2 {
+      background-color: $yellow;
+
+      .game-box-player,
+      .turn-box-time {
+        color: $primaryText;
+      }
+    }
+
+    .game-box-player,
+    .turn-box-time {
+      color: $secondaryText;
+    }
+
+    .turn-box-time {
+      font-size: 4rem;
+      font-weight: $fwMedium;
+    }
+  }
+
+  &.win-box,
+  &.tie-box {
+    background-color: $primaryBg;
+  }
+}
+
+/* ---------- Game Shadow ---------- */
+.game-shadow {
+  width: 100vw;
+  height: 25vh;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  background-color: $purpleDark;
+  border-radius: 5vw 5vw 0 0;
+
+  &.player-1 {
+    background-color: $playerOneClr;
+  }
+
+  &.player-2 {
+    background-color: $playerTwoClr;
+  }
+}
+
+/* ---------- Modal ---------- */
+.modal {
+  padding: 2rem;
+  background-color: $primaryBg;
+  border: 4px solid $secondaryBg;
+  box-shadow: 0 10px 0 0 $secondaryBg;
+  width: 90vw;
+  max-width: 50ch;
+  height: 80vh;
+  max-height: 32rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  animation: popupModal $modalPopupAnimationTime ease-in-out forwards;
+
+  &.closing {
+    animation: hideModal $modalHideAnimationTime ease-in-out forwards;
+  }
+
+  &.auto-size {
+    height: auto;
+    max-height: initial;
+  }
+
+  &.confirm-dialog {
+    .confirm-dialog-text {
+      font-size: 1.25rem;
+      font-weight: $fwMedium;
+      margin-bottom: 1rem;
+    }
+
+    .accept-button,
+    .reject-button {
+      margin-right: 0.5rem;
+    }
+
+    .accept-button {
+      background-color: $secondaryBg;
+      color: $secondaryText;
+
+      &:hover {
+        background-color: $secondaryBgSoft;
+      }
+    }
+
+    .reject-button {
+      background-color: $red;
+
+      &:hover {
+        background-color: $redDark;
+      }
+    }
+  }
+
+  &-content {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+
+  &,
+  &-close {
+    border-radius: 50px;
+  }
+
+  &-close {
+    cursor: pointer;
+    outline: 2px dashed transparent;
+    border: none;
+    background: none;
+    display: inline-block;
+    width: $modalCloseSize;
+    height: $modalCloseSize;
+    position: absolute;
+    bottom: -(math.div($modalCloseSize, 2));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+
+    &-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+
+  &-heading,
+  &-subheading {
+    text-transform: uppercase;
+    font-weight: $fwMedium;
+  }
+
+  &-heading {
+    color: $primaryText;
+    font-size: 4rem;
+    text-align: center;
+  }
+
+  &-subheading {
+    color: $tertiaryText;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  &-paragraph {
+    font-size: 1rem;
+    font-weight: $fwMedium;
+    color: $primaryTextSoft;
+    line-height: 1.25rem;
+  }
+
+  &-list {
+    list-style-type: none;
+    list-style-position: inside;
+
+    &-item {
+      margin-bottom: 0.5rem;
+      font-weight: $fwMedium;
+      color: $primaryTextSoft;
+      display: flex;
+      align-items: flex-start;
+
+      &-number {
+        min-width: 10px;
+        text-align: center;
+        color: $primaryText;
+        margin-right: 1rem;
+      }
+    }
+  }
+}
