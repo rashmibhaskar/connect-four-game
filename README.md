@@ -1,6 +1,7 @@
 # Connect Four Game
 
 A two-player game built using Vanilla JavaScript, HTML, CSS
+
 Play here - https://connect-four-game-gamma.vercel.app/
 
 ## Your users are able to:
