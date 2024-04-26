@@ -4,7 +4,7 @@ A two-player game built using Vanilla JavaScript, HTML, CSS
 
 Play here - https://connect-four-game-gamma.vercel.app/
 
-## Your users are able to:
+## Users are able to:
 - View the game rules
 - Play a game of Connect Four against another human player (alternating turns on the same computer)
 - View the optimal layout for the interface depending on their device's screen size
