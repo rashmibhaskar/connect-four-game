@@ -21,9 +21,10 @@ Play here - https://connect-four-game-gamma.vercel.app/
 - npm run build
 - open the index.html file inside ./build folder
 
+
+## Enjoy your game!! 🤩 
+
 ## Screenshot
 <img width="1440" alt="image" src="https://github.com/rashmibhaskar/connect-four-game/assets/50526525/0eb1d06d-f6a3-4a25-92fc-3cc90c8c9b46">
 
-
-## Enjoy your game!! 🤩 
 
